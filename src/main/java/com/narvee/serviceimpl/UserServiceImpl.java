@@ -48,18 +48,5 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long id) {
         repository.deleteById(id);
     }
-    @Override
-    public List<User> searchUsers(User user) {
-        return repository.findAll().stream()
-                .filter(u -> user.getName() == null || 
-                             u.getName().toLowerCase().contains(user.getName().toLowerCase()))
-                .filter(u -> user.getEmail() == null || 
-                             u.getEmail().toLowerCase().contains(user.getEmail().toLowerCase()))
-                .filter(u -> user.getPhoneNo() == null || 
-                             u.getPhoneNo().equals(user.getPhoneNo()))
-                .filter(u -> user.getAddress() == null || 
-                             u.getAddress().toLowerCase().contains(user.getAddress().toLowerCase()))
-                .collect(Collectors.toList());
-    }
-
+   
 }

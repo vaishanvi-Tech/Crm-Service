@@ -3,7 +3,12 @@ package com.narvee.serviceimpl;
 import com.narvee.entity.Company;
 import com.narvee.repository.CompanyRepository;
 import com.narvee.service.CompanyService;
+import com.narvee.specification.CompanySpecification;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -67,4 +72,21 @@ public class CompanyServiceImpl implements CompanyService {
                              c.getCountry().toLowerCase().contains(company.getCountry().toLowerCase()))
                 .collect(Collectors.toList());
     }
+    @Override
+    public Page<Company> getCompaniesPaged(Company filter, int page, int size, String sortBy, String sortDir) {
+
+        // DEFAULTS + VALIDATIONS
+        if (page < 0) page = 0;
+        if (size <= 0) size = 10;
+        if (size > 50) size = 50; // max limit
+
+        Sort sort = sortDir.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        return repository.findAll(CompanySpecification.filter(filter), pageable);
+    }
+
 }
